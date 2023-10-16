@@ -1,62 +1,58 @@
+import tkinter as tk
+from tkinter import messagebox
 import random
 import string
 
-# ASCII Art and User Interface
-print("Welcome to the")
-print(r"""
-  ____             ____                                          _    
- |  _ \ __ _ _ __ |  _ \ ___  ___ ___  _ __ ___  _ __ ___   __ _| | __
- | |_) / _` | '_ \| |_) / _ \/ __/ _ \| '_ ` _ \| '_ ` _ \ / _` | |/ /
- |  __/ (_| | |_) |  __/  __/ (_| (_) | | | | | | | | | | | (_| |   < 
- |_|   \__,_| .__/|_|   \___|\___\___/|_| |_| |_|_| |_| |_|\__, |_|\_\
-            |_|                                           |___/      
-""")
-print("The secure password generator!\n")
 
-# User input
-try:
-    nr_letters = int(input("How many letters would you like in your password?\n")) 
-    nr_symbols = int(input("How many symbols would you like?\n"))
-    nr_numbers = int(input("How many numbers would you like?\n"))
-except ValueError:
-    print("Oops! That was not a valid number. Try again...")
-    exit()
+def generate_password():
+    try:
+        nr_letters = int(letters_entry.get())
+        nr_symbols = int(symbols_entry.get())
+        nr_numbers = int(numbers_entry.get())
+    except ValueError:
+        messagebox.showerror("Error", "Invalid input. Please enter a valid number.")
+        return
 
-# Character pools
-letters = string.ascii_letters
-numbers = string.digits
-symbols = '!#$%&()*+'
+    letters = string.ascii_letters
+    numbers = string.digits
+    symbols = '!#$%&()*+'
 
-# Generate characters for the password using list comprehensions
-selected_letters = [random.choice(letters) for _ in range(nr_letters)]
-selected_symbols = [random.choice(symbols) for _ in range(nr_symbols)]
-selected_numbers = [random.choice(numbers) for _ in range(nr_numbers)]
+    selected_letters = [random.choice(letters) for _ in range(nr_letters)]
+    selected_symbols = [random.choice(symbols) for _ in range(nr_symbols)]
+    selected_numbers = [random.choice(numbers) for _ in range(nr_numbers)]
 
-# Combine all the selected characters
-password_characters = selected_letters + selected_symbols + selected_numbers
+    password_characters = selected_letters + selected_symbols + selected_numbers
+    random.shuffle(password_characters)
+    password = ''.join(password_characters)
 
-# Shuffle the characters to ensure randomness
-random.shuffle(password_characters)
+    password_output.delete(1.0, tk.END)
+    password_output.insert(tk.END, password)
 
-# Convert the list of characters into a string
-password = ''.join(password_characters)
 
-# Displaying the password creatively
-print("\nGenerating a strong password for you...\n")
-print(f"Here is your password:\n{'*' * len(password)}")
-print(f"{password}")
-print(f"{'*' * len(password)}\n")
-print("Make sure to store your password securely!\n")
+app = tk.Tk()
+app.title("Password Generator")
 
-print(r"""
-      _____                  _      
-     |  __ \                | |     
-     | |__) |_ _ _   _  __ _| | ___ 
-     |  ___/ _` | | | |/ _` | |/ _ \
-     | |  | (_| | |_| | (_| | |  __/
-     |_|   \__,_|\__,_|\__, |_|\___|
-                        __/ |       
-                       |___/        
-""")
+# Labels
+tk.Label(app, text="How many letters?").grid(row=0, column=0)
+tk.Label(app, text="How many symbols?").grid(row=1, column=0)
+tk.Label(app, text="How many numbers?").grid(row=2, column=0)
 
-print("Thank you for using PyPassword Generator! Stay Secure 🛡️")
+# Entry fields
+letters_entry = tk.Entry(app)
+letters_entry.grid(row=0, column=1, padx=10, pady=10)
+
+symbols_entry = tk.Entry(app)
+symbols_entry.grid(row=1, column=1, padx=10, pady=10)
+
+numbers_entry = tk.Entry(app)
+numbers_entry.grid(row=2, column=1, padx=10, pady=10)
+
+# Button to generate the password
+generate_button = tk.Button(app, text="Generate Password", command=generate_password)
+generate_button.grid(row=3, column=0, columnspan=2, pady=20)
+
+# Output area for the password
+password_output = tk.Text(app, height=2, width=30)
+password_output.grid(row=4, column=0, columnspan=2, pady=20)
+
+app.mainloop()
