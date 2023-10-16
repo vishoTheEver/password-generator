@@ -3,7 +3,6 @@ from tkinter import messagebox
 import random
 import string
 
-
 def generate_password():
     try:
         nr_letters = int(letters_entry.get())
@@ -28,6 +27,13 @@ def generate_password():
     password_output.delete(1.0, tk.END)
     password_output.insert(tk.END, password)
 
+# Function to copy password to clipboard
+def copy_to_clipboard():
+    password = password_output.get(1.0, tk.END).strip()  # Remove newline at the end
+    app.clipboard_clear()
+    app.clipboard_append(password)
+    app.update()  # This is required to finalize the clipboard update
+    messagebox.showinfo("Info", "Password copied to clipboard!")
 
 app = tk.Tk()
 app.title("Password Generator")
@@ -54,5 +60,9 @@ generate_button.grid(row=3, column=0, columnspan=2, pady=20)
 # Output area for the password
 password_output = tk.Text(app, height=2, width=30)
 password_output.grid(row=4, column=0, columnspan=2, pady=20)
+
+# Button to copy the password
+copy_button = tk.Button(app, text="Copy Password", command=copy_to_clipboard)
+copy_button.grid(row=5, column=0, columnspan=2, pady=10)
 
 app.mainloop()
